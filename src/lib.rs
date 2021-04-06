@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/TODO_CRATE_NAME/0.0.1")]
+#![doc(html_root_url = "https://docs.rs/an-asteracea-app/0.0.1")]
 #![warn(clippy::pedantic)]
 
 #[cfg(doctest)]
