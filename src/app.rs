@@ -1,7 +1,4 @@
-use std::{
-	cell::Cell,
-	sync::atomic::{AtomicU32, Ordering},
-};
+use std::sync::atomic::{AtomicU32, Ordering};
 
 asteracea::component! {
 	pub(crate) App(

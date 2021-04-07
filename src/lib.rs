@@ -2,7 +2,10 @@
 #![warn(clippy::pedantic)]
 
 use asteracea::{bumpalo::Bump, lignin, rhizome::Node};
-use lignin::auto_safety::{Align, AutoSafe as _, Deanonymize as _};
+use lignin::{
+	auto_safety::{Align, AutoSafe as _},
+	ThreadBound,
+};
 use lignin_dom::load;
 use log::{trace, LevelFilter};
 use std::{cell::RefCell, mem::swap, pin::Pin, slice, sync::Mutex};
@@ -14,14 +17,9 @@ use app::App;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc<'_> = wee_alloc::WeeAlloc::INIT;
 
-#[wasm_bindgen(start)]
-pub fn run() {
-	#[allow(clippy::main_recursion)]
-	main();
-}
-
+#[wasm_bindgen]
 #[allow(clippy::items_after_statements)]
-fn main() {
+pub fn main() {
 	console_error_panic_hook::set_once();
 
 	fern::Dispatch::new()
@@ -39,7 +37,7 @@ fn main() {
 		.expect_throw("Failed to set up logging.");
 
 	enum RootOwner {}
-	let mut root = Node::new_for::<RootOwner>();
+	let root = Node::new_for::<RootOwner>();
 
 	struct LoadAllocator<'a>(&'a Bump);
 	impl<'a> load::Allocator<'a> for LoadAllocator<'a> {
@@ -57,18 +55,16 @@ fn main() {
 	let render = {
 		let mut bump_a = Bump::new();
 		let mut bump_b = Bump::new();
-		let app_root = web_sys::window()
+		let document = web_sys::window().unwrap_throw().document().unwrap_throw();
+		let app_root = document.create_element("DIV").unwrap_throw();
+		app_root.set_attribute("id", "app-root").unwrap_throw();
+		document
+			.body()
 			.unwrap_throw()
-			.document()
-			.unwrap_throw()
-			.get_element_by_id("app-root")
+			.append_with_node_1(&app_root)
 			.unwrap_throw();
 
-		let mut previous: lignin::Node<_> = load::load_element(
-			&LoadAllocator(unsafe { &*(&bump_a as *const _) }),
-			&app_root,
-		)
-		.content;
+		let mut previous: lignin::Node<ThreadBound> = lignin::Node::Multi(&[]);
 		let mut differ = lignin_dom::diff::DomDiffer::new_for_element_child_nodes(app_root);
 		let render = Mutex::new(move || {
 			trace!("render");
