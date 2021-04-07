@@ -23,6 +23,9 @@ include = [
 resolver = "2"
 publish = false
 
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 [badges]
 is-it-maintained-issue-resolution = { repository = "Tamschi/an-asteracea-app" }
 is-it-maintained-open-issues = { repository = "Tamschi/an-asteracea-app" }
@@ -33,3 +36,22 @@ cargo-husky = "1.5.0"
 doc-comment = "0.3.3"
 git_info = "0.1.2"
 version-sync = "0.9.1"
+
+[dependencies]
+asteracea = { git = "https://github.com/Tamschi/Asteracea.git", branch = "lignin-rework" }
+console_error_panic_hook = "0.1.6"
+console_log = "0.2.0"
+fern = "0.6.0"
+js-sys = "0.3.50"
+lignin-dom = { git = "https://github.com/Tamschi/lignin-dom.git", branch = "develop" }
+log = "0.4.14"
+wasm-bindgen = "0.2.73"
+web-sys = { version = "0.3.50", features = [
+	"Document",
+	"Element",
+	"Window",
+] }
+wee_alloc = "0.4.5"
+
+[build-dependencies]
+asteracea = { git = "https://github.com/Tamschi/Asteracea.git", branch = "lignin-rework" }

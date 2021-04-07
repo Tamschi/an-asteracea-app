@@ -20,13 +20,7 @@ A simple SPA project to work on boilerplate reduction.
 Please use [cargo-edit](https://crates.io/crates/cargo-edit) to always add the latest version of this library:
 
 ```cmd
-cargo add an-asteracea-app
-```
-
-## Example
-
-```rust
-// TODO_EXAMPLE
+TODO
 ```
 
 ## License
